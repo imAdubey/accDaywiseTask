@@ -31,7 +31,7 @@ router.post('/addCategory', (req, res, next)=>{
         });
 });
 
-// same code for router.put() as well
+// same way for router.put() as well
 router.patch('/updateCategory/:id', (req, res, next)=>{
     var id = req.params.id;
     var upPassCat = req.body.passcat;
