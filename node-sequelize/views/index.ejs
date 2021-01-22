@@ -1,11 +1,136 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>All List</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+      <!-- fontawesome link -->
+      <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+      <script src="https://use.fontawesome.com/df8467bbc4.js"></script>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-5">
+          <h1>All List</h1>
+        </div>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-4">
+          <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">Add a user</button>
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form method="POST" action="/users/addUser">
+                    <label><b>First Name</b></label>
+                    <input type="text" name="fname" class="form-control">
+                    
+                    <label><b>Last Name</b></label>
+                    <input type="text" name="lname" class="form-control">
+                    
+                    <label><b>DOB</b></label>
+                    <input type="date" name="dob" class="form-control">
+
+                    <label><b>Mobile</b></label>
+                    <input type="text" name="mobileno" maxlength="10" class="form-control">
+
+                    <input style="width: 100%" class="btn btn-primary mt-3" type="submit" name="save" value="Save">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="table table-border text-center">
+        <thead>
+          <tr>
+            <th>Srno.</th>
+            <th>Unique ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Full Name</th>
+            <th>DOB</th>
+            <th>Mobile</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(userData.length > 0){ let i = 1; %>
+            <% for(data of userData){ %>
+              <% var reqDate = new Date(data.dob); %>
+              <tr>
+                <td><%= i %></td>
+                <td><%= data.unique_id %></td>
+                <td><%= data.first_name %></td>
+                <td><%= data.last_name %></td>
+                <td><%= data.full_name %></td>
+                <!-- divide date string in spaces, then remove the first element(i.e Day), and then join again -->
+                <td><%= reqDate.toDateString().split(' ').slice(1).join(' ') %></td>
+                <td><%= data.mobile_no %></td>
+                <td>
+                  <a class="text-dark" data-toggle="modal" data-target="#exampleModal<%= data.id %>"><i class="fa fa-pencil" aria-hidden="true"></i></a> 
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal<%= data.id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Update User</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form method="POST" action="/users/updateEmployee">
+                              <label><b>First Name</b></label>
+                              <input type="text" name="fname" class="form-control" value="<%= data.first_name %>">
+                              <input type="hidden" name="id" class="form-control" value="<%= data.id %>">
+                              
+                              <label><b>Last Name</b></label>
+                              <input type="text" name="lname" class="form-control" value="<%= data.last_name %>">
+                              
+                              <label><b>DOB</b></label>
+                              <input type="date" name="dob" class="form-control" value="<%= data.dob %>">
+
+                              <label><b>Mobile</b></label>
+                              <input type="text" name="mobileno" maxlength="10" class="form-control" value="<%= data.mobile_no %>">
+
+                              <input style="width: 100%" class="btn btn-success mt-3" type="submit" name="update" value="Update">
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>  
+                  | 
+                  <a class="text-danger" href="/users/deleteEmployee/<%= data.id %>"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                </td>
+              </tr>
+            <% i++; } %>
+          <% }else{%> 
+            <tr>
+              <td colspan="7">No data available!</td>
+            </tr>
+          <%} %>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>
